@@ -1,0 +1,61 @@
+
+.terminal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  position: relative;
+
+  height: 100%;
+  width: 100%;
+
+  background: #0D321F;
+}
+
+.blink {
+  animation: blinker 2s linear infinite;
+}
+
+.terminal-lockout {
+  margin-top: 25px;
+  margin-bottom: 25px;
+
+  animation: blinker 2s linear infinite;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.try-again {
+  margin-top: 25px;
+
+  &:hover {
+    background: #2AF48C;
+
+    color: #0D321F;
+
+    cursor: pointer;
+  }
+}
+
+.terminal-column-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+}
+
+@keyframes blinker {
+  75% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+}
