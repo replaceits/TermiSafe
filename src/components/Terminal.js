@@ -4,6 +4,7 @@ import TerminalColumn from './TerminalColumn';
 import TerminalGuesses from './TerminalGuesses';
 
 import './Terminal.scss';
+import TerminalHeader from './TerminalHeader';
 
 class Terminal extends React.Component {
   render() {
@@ -14,13 +15,7 @@ class Terminal extends React.Component {
     
     return (
       <div className="terminal">
-        <code className='terminal-attempts'>
-          ATTEMPTS REMAINING:&nbsp;
-          <span className={locked && !this.props.unlocked ? 'blink' : ''}>{this.props.tries}</span>
-        </code>
-        <code className={locked || this.props.unlocked ? 'terminal-lockout' : 'terminal-lockout invisible'}>
-          {this.props.unlocked ? 'UNLOCKED' : 'LOCKED OUT'}
-        </code>
+        <TerminalHeader locked={locked} unlocked={this.props.unlocked} tries={this.props.tries} />
         <div className='terminal-column-container'>
           <TerminalColumn 
             words={firstWords}

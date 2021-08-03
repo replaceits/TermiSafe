@@ -1,0 +1,22 @@
+
+.terminal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.blink {
+  animation: blinker 2s linear infinite;
+}
+
+.terminal-lockout {
+  margin-top: 25px;
+  margin-bottom: 25px;
+
+  animation: blinker 2s linear infinite;
+}
+
+.invisible {
+  visibility: hidden;
+}
