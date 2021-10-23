@@ -1,30 +1,19 @@
-import React from 'react';
-
-
 
 import TerminalRow from './TerminalRow';
 
-class TerminalColumn extends React.Component {
-  getRows() {
-    return this.props.words.map((word, key) => (
-      <TerminalRow
-        word={word}
-        handleWordClick={this.props.handleWordClick}
-        index={key + (this.props.index * this.props.words.length)} 
-        key={key}
-      />
-    ));
-  }
-
-  render() {
-    const rows = this.getRows();
-
-    return (
-      <div className="terminal-column">
-        {rows}
-      </div>
-    );
-  }
+function TerminalColumn({words, handleWordClick, index}) {
+  return (
+    <div className="terminal-column">
+      {words.map((word, key) => (
+        <TerminalRow
+          word={word}
+          handleWordClick={handleWordClick}
+          index={key + (index * words.length)} 
+          key={key}
+        />
+      ))}
+    </div>
+  );
 }
 
 export default TerminalColumn;
