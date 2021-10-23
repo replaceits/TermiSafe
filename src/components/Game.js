@@ -6,84 +6,75 @@ import settings from '../helpers/settings';
 
 import './Game.scss';
 
-class Game extends React.Component {
-  constructor(props) {
-    super(props);
+function getNewGameState() {
+  const words = wordlists.generateWords();
 
-    this.state = {...this.getNewGameState()};
-  }
+  return {
+    tries: settings.TRIES,
+    words,
+    password: words[Math.floor(Math.random() * words.length)].word,
+    guesses: [],
+    unlocked: false,
+  };
+}
 
-  getNewGameState() {
-    const words = wordlists.generateWords();
-
-    return {
-      tries: settings.TRIES,
-      words,
-      password: words[Math.floor(Math.random() * words.length)].word,
-      guesses: [],
-      unlocked: false,
-    };
-  }
-
-  guessPassword(guess) {
+function GameReducer(state, action) {
+  if (action.type === 'guess') {
     let lettersCorrect = 0;
 
     for (let i = 0; i < settings.WORD_LENGTH; i++) {
-      if (this.state.password[i] === guess[i]) lettersCorrect++;
+      if (state.password[i] === action.guess[i]) lettersCorrect++;
     }
 
-    const guesses = [...this.state.guesses, {guess, lettersCorrect}];
-
-    this.setState({
-      guesses
-    })
-
-    return lettersCorrect;
-  }
-
-  decreaseTries() {
-    const tries = this.state.tries - 1;
-
-    this.setState({
-      tries,
-    });
-  }
-
-  handleWordClick(guess) {
-    if (this.state.unlocked) return;
-    if (this.state.tries === 0) return;
-
-    const lettersCorrect = this.guessPassword(guess);
+    let unlocked = state.unlocked;
 
     if (lettersCorrect === settings.WORD_LENGTH) {
-      this.setState({
-        unlocked: true,
-      });
+      unlocked = true
     }
 
-    this.decreaseTries();
+    return {
+      ...state,
+      unlocked,
+      guesses: [
+        ...state.guesses, 
+        {guess: action.guess, lettersCorrect}
+      ],
+      tries: state.tries - 1
+    }
+  } else if (action.type === 'reset') {
+    return getNewGameState()
   }
 
-  handleTryAgainClick() {
-    this.setState(this.getNewGameState());
+  throw new Error('Invalid action dispatched');
+}
+
+function Game() {
+  const [state, dispatch] = React.useReducer(GameReducer, getNewGameState());
+
+  const handleWordClick = guess => {
+    if (state.unlocked) return;
+    if (state.tries === 0) return;
+
+    dispatch({ type: 'guess', guess });
   }
 
-  render() {
-    const current = {...this.state};
-
-    return (
-      <div className="game">
-        <Terminal 
-          tries={current.tries}
-          words={current.words}
-          guesses={current.guesses}
-          unlocked={current.unlocked}
-          handleWordClick={guess => this.handleWordClick(guess)}
-          handleTryAgainClick={() => this.handleTryAgainClick()}
-        />
-      </div>
-    );
+  const handleTryAgainClick = () => {
+    dispatch({type: 'reset'});
   }
+
+
+  return (
+    <div className="game">
+      <Terminal 
+        tries={state.tries}
+        words={state.words}
+        guesses={state.guesses}
+        unlocked={state.unlocked}
+        handleWordClick={guess => handleWordClick(guess)}
+        handleTryAgainClick={() => handleTryAgainClick()}
+      />
+    </div>
+  );
 }
 
 export default Game;
